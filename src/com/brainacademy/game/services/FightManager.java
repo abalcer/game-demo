@@ -1,27 +1,23 @@
 package com.brainacademy.game.services;
 
-import com.brainacademy.game.config.PlayerConfiguration;
 import com.brainacademy.game.model.*;
 import com.brainacademy.game.skills.Skill;
 import com.brainacademy.game.utils.RandomUtils;
 
 public class FightManager {
-    private final PlayerConfiguration playerConfiguration;
+    private final PlayerFactoryBuilder playerFactoryBuilder;
     private final CommandBuilder commandBuilder;
 
-    private Command[] commands = new Command[2];
+    private Command[] commands;
     private int assaultCommandIdx;
 
-    public FightManager(PlayerConfiguration playerConfiguration, CommandBuilder commandBuilder) {
-        this.playerConfiguration = playerConfiguration;
+    public FightManager(PlayerFactoryBuilder playerFactoryBuilder, CommandBuilder commandBuilder) {
+        this.playerFactoryBuilder = playerFactoryBuilder;
         this.commandBuilder = commandBuilder;
     }
 
     public void start() {
-        int idx = 0;
-        for (Race race : playerConfiguration.getRandomConfrontationRaces()) {
-            commands[idx++] = commandBuilder.build(race, playerConfiguration);
-        }
+        commands = commandBuilder.buildCommandsArray(playerFactoryBuilder);
         assaultCommandIdx = RandomUtils.getRandomVal(2);
     }
 

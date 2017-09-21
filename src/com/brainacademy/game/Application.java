@@ -1,24 +1,22 @@
 package com.brainacademy.game;
 
-import com.brainacademy.game.config.PlayerConfiguration;
-import com.brainacademy.game.model.CharacterClassType;
-import com.brainacademy.game.model.Command;
-import com.brainacademy.game.model.CommandBuilder;
-import com.brainacademy.game.model.Move;
+import com.brainacademy.game.services.PlayerFactoryBuilder;
+import com.brainacademy.game.model.*;
 import com.brainacademy.game.services.FightManager;
 
 public class Application {
 
     public static void main(String[] args) {
-        PlayerConfiguration playerConfiguration = new PlayerConfiguration();
-        playerConfiguration.configure();
+        PlayerFactoryBuilder playerFactoryBuilder = PlayerFactoryBuilder.getInstance();
 
         CommandBuilder commandBuilder = new CommandBuilder()
                 .withCharacterClass(CharacterClassType.MAGIC, 1)
                 .withCharacterClass(CharacterClassType.ARCHER, 3)
-                .withCharacterClass(CharacterClassType.WARRIOR, 4);
+                .withCharacterClass(CharacterClassType.WARRIOR, 4)
+                .withAllianceRaces(Race.ELVES, Race.HUMAN)
+                .withAllianceRaces(Race.ORCS, Race.UNDEAD);
 
-        FightManager fightManager = new FightManager(playerConfiguration, commandBuilder);
+        FightManager fightManager = new FightManager(playerFactoryBuilder, commandBuilder);
 
         fightManager.start();
 

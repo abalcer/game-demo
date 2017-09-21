@@ -1,23 +1,19 @@
-package com.brainacademy.game.config;
+package com.brainacademy.game.services;
 
 import com.brainacademy.game.model.*;
-import com.brainacademy.game.services.PlayerFactory;
 import com.brainacademy.game.skills.AttackSkill;
 import com.brainacademy.game.skills.CurseSkill;
 import com.brainacademy.game.skills.DiseaseSkill;
 import com.brainacademy.game.skills.EnhancementSkill;
-import com.brainacademy.game.utils.RandomUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class PlayerConfiguration {
-    private Map<Race, PlayerFactory> playerFactoryMap = new HashMap<>();
-    
-    private List<Race[]> confrontationRaces = Arrays.asList(
-            new Race[]{Race.ELVES, Race.HUMAN},
-            new Race[]{Race.ORCS, Race.UNDEAD});
+public class PlayerFactoryBuilder {
+    private static Map<Race, PlayerFactory> playerFactoryMap = new HashMap<>();
+    private static PlayerFactoryBuilder instance;
 
-    public void configure() {
+    static {
         playerFactoryMap.put(Race.ELVES, PlayerFactory.registerRace(Race.ELVES)
                 .forType(new Magic("маг"))
                 .withSkill(new EnhancementSkill(1.5))
@@ -75,13 +71,18 @@ public class PlayerConfiguration {
                 .create());
     }
 
-    public List<Race> getRandomConfrontationRaces() {
-        Race race1 = RandomUtils.getRandomElement(confrontationRaces.get(0));
-        Race race2 = RandomUtils.getRandomElement(confrontationRaces.get(1));
-        return Arrays.asList(race1, race2);
+
+    private PlayerFactoryBuilder() {
     }
 
-    public PlayerFactory getPlayerFactoryForRace(Race race) {
+    public static PlayerFactoryBuilder getInstance() {
+        if (instance == null) {
+            instance = new PlayerFactoryBuilder();
+        }
+        return instance;
+    }
+    
+    public PlayerFactory build(Race race) {
         return playerFactoryMap.get(race);
     }
 }
